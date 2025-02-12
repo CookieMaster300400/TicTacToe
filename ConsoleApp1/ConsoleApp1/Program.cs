@@ -141,10 +141,8 @@ namespace ConsoleApp1
             while (true)
             {
                 string strIndex = Console.ReadLine().Replace(" ", "");
-                if (strIndex.Length == 2 && int.TryParse(strIndex[0].ToString(), out int row) && int.TryParse(strIndex[1].ToString(), out int col))
+                if (strIndex.Length == 2 && int.TryParse(strIndex[0].ToString(), out int row) && int.TryParse(strIndex[1].ToString(), out int col) && row < field.GetLength(0) && col < field.GetLength(1))
                 {
-                    try
-                    {
                         if (field[row, col] == '?')
                         {
                             Console.Clear();
@@ -164,11 +162,6 @@ namespace ConsoleApp1
                         {
                             Console.WriteLine("Место занято");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
                 }
                 else
                 {

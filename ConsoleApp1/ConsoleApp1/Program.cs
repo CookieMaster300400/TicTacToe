@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ConsoleApp1
 {
@@ -11,14 +11,9 @@ namespace ConsoleApp1
                 Console.WriteLine("Чтобы начать игру нажмите 1\n Чтобы выбрать размеры поля нажмите 2");
                 if (int.TryParse(Console.ReadLine(), out int changeOrNotSizes) && changeOrNotSizes is 1 or 2)
                 {
-                    if (changeOrNotSizes == 1)
-                    {
-                        CreateField(field_Rows_Size, field_Cols_Size);
-                    }
-                    else
+                    if (changeOrNotSizes == 2)
                     {
                         UsersSizeOfField(out field_Rows_Size, out field_Cols_Size);
-                        CreateField(field_Rows_Size, field_Cols_Size);
                     }
                     break;
                 }
@@ -46,14 +41,14 @@ namespace ConsoleApp1
                 Console.WriteLine("Размер поля может быть минимум 3х3 и максимум 9х9");
             }
         }
-        static void CreateField(int field_Rows_Size, int field_Cols_Size)
+        static char[,] CreateField(int field_Rows_Size, int field_Cols_Size)
         {
             const char EmptyPlace = '?';
             char[,] field = new char[field_Rows_Size, field_Cols_Size];
             for (int i = 0; i < field.GetLength(0); i++)
                 for (int j = 0; j < field.GetLength(1); j++)
                     field[i, j] = EmptyPlace;
-            ShowField(field);
+            return field;
         }
         static void ShowField(char[,] field)
         {
@@ -65,7 +60,6 @@ namespace ConsoleApp1
                 }
                 Console.WriteLine();
             }
-            Draw(field);
         }
         static bool crossesOrZeros = false;
         static int draw = 0;
@@ -76,12 +70,9 @@ namespace ConsoleApp1
                 Console.WriteLine("Ничья");
                 Environment.Exit(0);
             }
-            VictoryChecker(field);
         }
-        static void VictoryChecker(char[,] field)
+        static void VictoryChecker(char[,] field, char Zero, char Cross)
         {
-            const char Zero = 'O';
-            const char Cross = 'X';
             bool isCrossesWon = false;
             bool isZerosWon = false;
             for (int i = 0; i < field.GetLength(0); i++)
@@ -144,15 +135,6 @@ namespace ConsoleApp1
                 Console.WriteLine("Нолики победили");
                 Environment.Exit(0);
             }
-            if (!crossesOrZeros)
-            {
-                Console.WriteLine("Ход крестиков:");
-            }
-            else
-            {
-                Console.WriteLine("Ход ноликов:");
-            }
-            CrossesOrZerosMovings(field, Cross, Zero);
         }
         static void CrossesOrZerosMovings(char[,] field, char Cross, char Zero)
         {
@@ -176,7 +158,7 @@ namespace ConsoleApp1
                             }
                             crossesOrZeros = !crossesOrZeros;
                             ++draw;
-                            ShowField(field);
+                            TheGameIsOn(field, Zero, Cross);
                         }
                         else
                         {
@@ -194,12 +176,29 @@ namespace ConsoleApp1
                 }
             }
         }
+        static void TheGameIsOn(char[,] field, char Zero, char Cross)
+        {
+            ShowField(field);
+            VictoryChecker(field, Zero, Cross);
+            if (!crossesOrZeros)
+            {
+                Console.WriteLine("Ход крестиков:");
+            }
+            else
+            {
+                Console.WriteLine("Ход ноликов:");
+            }
+            CrossesOrZerosMovings(field, Cross, Zero);
+        }
         static void Main(string[] args)
         {
             int field_Rows_Size = 3;
             int field_Cols_Size = 3;
+            const char Zero = 'O';
+            const char Cross = 'X';
             StartOrChangeSizeOfField(ref field_Rows_Size, ref field_Cols_Size);
+            char[,] field = CreateField(field_Rows_Size, field_Cols_Size);
+            TheGameIsOn(field, Zero, Cross);
         }
     }
 }
-

@@ -35,7 +35,7 @@ namespace ConsoleApp1
             while (true)
             {
                 Console.WriteLine("Введите размер по cols:");
-                if (int.TryParse(Console.ReadLine(), out field_Cols_Size) && field_Cols_Size is > 2 and < 10)
+                if (int.TryParse(Console.ReadLine(), out field_Cols_Size) && field_Cols_Size is >= MinSize and <= MaxSize)
                     break;
 
                 Console.WriteLine("Размер поля может быть минимум 3х3 и максимум 9х9");
@@ -197,3 +197,4 @@ namespace ConsoleApp1
         }
     }
 }
+

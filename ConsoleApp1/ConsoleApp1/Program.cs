@@ -173,6 +173,8 @@ namespace ConsoleApp1
         {
             ShowField(field);
             VictoryChecker(field, Zero, Cross);
+            Draw(field);
+            Console.WriteLine("Введите 2 цифры сначала значение по row, затем по col");
             if (!crossesOrZeros)
             {
                 Console.WriteLine("Ход крестиков:");

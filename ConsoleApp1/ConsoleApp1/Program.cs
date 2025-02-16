@@ -13,31 +13,23 @@ namespace ConsoleApp1
                 {
                     if (changeOrNotSizes == 2)
                     {
-                        UsersSizeOfField(out field_Rows_Size, out field_Cols_Size);
+                        field_Rows_Size = UsersSizeOfField("rows");
+                        field_Cols_Size = UsersSizeOfField("cols");
                     }
                     break;
                 }
                 Console.WriteLine("Некорректный ввод");
             }
         }
-        static void UsersSizeOfField(out int field_Rows_Size, out int field_Cols_Size)
+        static int UsersSizeOfField(string rowOrColl)
         {
             const int MaxSize = 9;
             const int MinSize = 3;
             while (true)
             {
-                Console.WriteLine("Введите размер по rows:");
-                if (int.TryParse(Console.ReadLine(), out field_Rows_Size) && field_Rows_Size is >= MinSize and <= MaxSize)
-                    break;
-
-                Console.WriteLine("Размер поля может быть минимум 3х3 и максимум 9х9");
-            }
-            while (true)
-            {
-                Console.WriteLine("Введите размер по cols:");
-                if (int.TryParse(Console.ReadLine(), out field_Cols_Size) && field_Cols_Size is >= MinSize and <= MaxSize)
-                    break;
-
+                Console.WriteLine($"Введите размер по rows: {rowOrColl}");
+                if (int.TryParse(Console.ReadLine(), out int size) && size is >= MinSize and <= MaxSize)
+                    return size;
                 Console.WriteLine("Размер поля может быть минимум 3х3 и максимум 9х9");
             }
         }
@@ -61,9 +53,7 @@ namespace ConsoleApp1
                 Console.WriteLine();
             }
         }
-        static bool crossesOrZeros = false;
-        static int draw = 0;
-        static void Draw(char[,] field)
+        static void Draw(char[,] field, int draw)
         {
             if (draw >= field.GetLength(0) * field.GetLength(1))
             {
@@ -71,97 +61,49 @@ namespace ConsoleApp1
                 Environment.Exit(0);
             }
         }
-        static void VictoryChecker(char[,] field, char Zero, char Cross)
+        static bool VictoryChecker(char[,] field, char Symbol)
         {
-            bool isCrossesWon = false;
-            bool isZerosWon = false;
             for (int i = 0; i < field.GetLength(0); i++)
             {
                 for (int j = 0; j < field.GetLength(1); j++)
                 {
-                    if (j + 2 < field.GetLength(1))
+                    if (j + 2 < field.GetLength(1) && (field[i, j] == Symbol && field[i, j + 1] == Symbol && field[i, j + 2] == Symbol))
                     {
-                        if (field[i, j] == Cross && field[i, j + 1] == Cross && field[i, j + 2] == Cross)
-                        {
-                            isCrossesWon = true;
-                        }
-                        else if (field[i, j] == Zero && field[i, j + 1] == Zero && field[i, j + 2] == Zero)
-                        {
-                            isZerosWon = true;
-                        }
+                        return true;
                     }
-                    if (i + 2 < field.GetLength(0))
+                    else if (i + 2 < field.GetLength(0) && (field[i, j] == Symbol && field[i + 1, j] == Symbol && field[i + 2, j] == Symbol))
                     {
-                        if (field[i, j] == Cross && field[i + 1, j] == Cross && field[i + 2, j] == Cross)
-                        {
-                            isCrossesWon = true;
-                        }
-                        else if (field[i, j] == Zero && field[i + 1, j] == Zero && field[i + 2, j] == Zero)
-                        {
-                            isZerosWon = true;
-                        }
+                        return true;
                     }
-                    if (i + 2 < field.GetLength(0) && j + 2 < field.GetLength(1))
+                    else if (i + 2 < field.GetLength(0) && j + 2 < field.GetLength(1) && (field[i, j] == Symbol && field[i + 1, j + 1] == Symbol && field[i + 2, j + 2] == Symbol))
                     {
-                        if (field[i, j] == Cross && field[i + 1, j + 1] == Cross && field[i + 2, j + 2] == Cross)
-                        {
-                            isCrossesWon = true;
-                        }
-                        else if (field[i, j] == Zero && field[i + 1, j + 1] == Zero && field[i + 2, j + 2] == Zero)
-                        {
-                            isZerosWon = true;
-                        }
+                        return true;
                     }
-                    if (i - 2 >= 0 && j + 2 < field.GetLength(1))
+                    else if (i - 2 >= 0 && j + 2 < field.GetLength(1) && (field[i, j] == Symbol && field[i - 1, j + 1] == Symbol && field[i - 2, j + 2] == Symbol))
                     {
-                        if (field[i, j] == Cross && field[i - 1, j + 1] == Cross && field[i - 2, j + 2] == Cross)
-                        {
-                            isCrossesWon = true;
-                        }
-                        else if (field[i, j] == Zero && field[i - 1, j + 1] == Zero && field[i - 2, j + 2] == Zero)
-                        {
-                            isZerosWon = true;
-                        }
+                        return true;
                     }
                 }
             }
-            if (isCrossesWon)
-            {
-                Console.WriteLine("Крестики победили");
-                Environment.Exit(0);
-            }
-            else if (isZerosWon)
-            {
-                Console.WriteLine("Нолики победили");
-                Environment.Exit(0);
-            }
+            return false;
         }
-        static void CrossesOrZerosMovings(char[,] field, char Cross, char Zero)
+        static void CrossesOrZerosMovings(char[,] field, char Symbol)
         {
             while (true)
             {
                 string strIndex = Console.ReadLine().Replace(" ", "");
                 if (strIndex.Length == 2 && int.TryParse(strIndex[0].ToString(), out int row) && int.TryParse(strIndex[1].ToString(), out int col) && row < field.GetLength(0) && col < field.GetLength(1))
                 {
-                        if (field[row, col] == '?')
-                        {
-                            Console.Clear();
-                            if (crossesOrZeros == false)
-                            {
-                                field[row, col] = Cross;
-                            }
-                            else
-                            {
-                                field[row, col] = Zero;
-                            }
-                            crossesOrZeros = !crossesOrZeros;
-                            ++draw;
-                            TheGameIsOn(field, Zero, Cross);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Место занято");
-                        }
+                    if (field[row, col] == '?')
+                    {
+                        Console.Clear();
+                        field[row, col] = Symbol;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Место занято");
+                    }
                 }
                 else
                 {
@@ -171,19 +113,24 @@ namespace ConsoleApp1
         }
         static void TheGameIsOn(char[,] field, char Zero, char Cross)
         {
-            ShowField(field);
-            VictoryChecker(field, Zero, Cross);
-            Draw(field);
-            Console.WriteLine("Введите 2 цифры сначала значение по row, затем по col");
-            if (!crossesOrZeros)
+            bool crossesOrZeros = false;
+            int draw = 0;
+            while (true)
             {
-                Console.WriteLine("Ход крестиков:");
+                Console.WriteLine("Введите 2 цифры сначала значение по row, затем по col");
+                    Console.WriteLine(crossesOrZeros ? "Ход ноликов" : "Ход крестиков");
+                    CrossesOrZerosMovings(field, crossesOrZeros ? Zero : Cross);
+                bool isWon = VictoryChecker(field, crossesOrZeros ? Zero : Cross);
+                ShowField(field);
+                if (isWon == true)
+                {
+                    Console.WriteLine(crossesOrZeros ? "нолики победили" : "крестики победили");
+                    Environment.Exit(0);
+                }
+                ++draw;
+                Draw(field, draw);
+                crossesOrZeros = !crossesOrZeros;
             }
-            else
-            {
-                Console.WriteLine("Ход ноликов:");
-            }
-            CrossesOrZerosMovings(field, Cross, Zero);
         }
         static void Main(string[] args)
         {
@@ -193,8 +140,8 @@ namespace ConsoleApp1
             const char Cross = 'X';
             StartOrChangeSizeOfField(ref field_Rows_Size, ref field_Cols_Size);
             char[,] field = CreateField(field_Rows_Size, field_Cols_Size);
+            ShowField(field);
             TheGameIsOn(field, Zero, Cross);
         }
     }
 }
-

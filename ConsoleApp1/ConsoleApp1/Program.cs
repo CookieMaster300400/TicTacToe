@@ -27,7 +27,7 @@ namespace ConsoleApp1
             const int MinSize = 3;
             while (true)
             {
-                Console.WriteLine($"Введите размер по rows: {rowOrColl}");
+                Console.WriteLine($"Введите размер по {rowOrColl}:");
                 if (int.TryParse(Console.ReadLine(), out int size) && size is >= MinSize and <= MaxSize)
                     return size;
                 Console.WriteLine("Размер поля может быть минимум 3х3 и максимум 9х9");
